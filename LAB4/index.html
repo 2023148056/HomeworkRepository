@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1 class="sliding-text">인프밍 영화 정보 사이트 입니다.</h1>
+    </div>
+
+    <nav class="flexible-container">
+        <a href="index.html" class="active-link">메인페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원 가입</a>
+    </nav>
+    <hr>
+    <main class="main-container">
+        <section class="search-section">
+            <input type="text" id="search" placeholder="키워드를 입력하세요.">
+            <button id="filter-button">Filter results</button>
+        </section>
+        <section class="movies-section">
+            <div class="movies-header">
+                <h2>Movies</h2>
+                <hr>
+            </div>
+            <div class="main-content">
+                <div id="sort-box">
+                    <strong>정렬 기준</strong><br><br>
+                    <label><input type="radio" name="sort" value="rating-desc"> 평점 내림차순</label><br>
+                    <label><input type="radio" name="sort" value="rating-asc"> 평점 오름차순</label><br>
+                    <label><input type="radio" name="sort" value="date-desc"> 개봉 내림차순</label><br>
+                    <label><input type="radio" name="sort" value="date-asc"> 개봉 오름차순</label>
+                </div>
+                <div class="movie-container" id="movie-container">
+                </div>
+            </div>
+        </section>
+        <section class="about-section">
+            <div class="about-header">
+                <h2>About</h2>
+                <hr>
+            </div>
+            <div class="about-content">
+                <p>
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트! 
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트!
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트!
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트!
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트!
+                    여기는 인프밍 영화 정보 사이트! 여기는 인프밍 영화 정보 사이트!
+                </p>
+            </div>
+        </section>
+    </main>
+    <script>
+        let allMovies = [];
+        let currentFiltered = [];
+        let currentIndex = 0;
+        const BATCH_SIZE = 6;
+      
+        // JSON 로드
+        fetch('product.json')
+          .then(response => response.json())
+          .then(data => {
+            allMovies = data;
+            currentFiltered = allMovies;
+            renderMovies(currentFiltered);
+          });
+      
+        // 렌더링 함수
+        function renderMovies(movieList) {
+          const container = document.getElementById('movie-container');
+      
+          for (let i = currentIndex; i < currentIndex + BATCH_SIZE && i < movieList.length; i++) {
+            const movie = movieList[i];
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+      
+            card.innerHTML = `
+              <div class="poster-wrapper">
+                <img src="img/${movie.id}.jpg" alt="${movie.title}" width="200px" height="300px">
+                <div class="overlay"><strong>줄거리:</strong><br>${movie.overview}</div>
+              </div>
+              <div class="movie-info">
+                <h3>${movie.title}</h3>
+                <p>📅 ${movie.release_date}</p>
+                <p>⭐ ${movie.vote_average}/10</p>
+              </div>
+            `;
+      
+            container.appendChild(card);
+          }
+      
+          currentIndex += BATCH_SIZE;
+        }
+      
+        // 🔍 필터 버튼 클릭
+        document.getElementById('filter-button').addEventListener('click', function () {
+          const keyword = document.getElementById('search').value.toLowerCase();
+      
+          // 필터링 수행
+          currentFiltered = allMovies.filter(movie =>
+            movie.title.toLowerCase().includes(keyword) ||
+            movie.overview.toLowerCase().includes(keyword)
+          );
+      
+          // ✅ 이전 결과 제거 및 인덱스 초기화
+          document.getElementById('movie-container').innerHTML = '';
+          currentIndex = 0;
+      
+          // 필터링된 데이터 렌더링
+          renderMovies(currentFiltered);
+        });
+      
+        // 📜 infinite scroll
+        window.addEventListener('scroll', () => {
+          if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+            renderMovies(currentFiltered);  // ✅ 현재 필터 결과 기반으로 더 로드
+          }
+        });
+
+        document.querySelectorAll('input[name="sort"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const sortValue = e.target.value;
+
+                // 정렬된 배열을 복사본으로 처리
+                currentFiltered.sort((a, b) => {
+                    switch (sortValue) {
+                    case 'rating-desc':
+                        return b.vote_average - a.vote_average;
+                    case 'rating-asc':
+                        return a.vote_average - b.vote_average;
+                    case 'date-desc':
+                        return new Date(b.release_date) - new Date(a.release_date);
+                    case 'date-asc':
+                        return new Date(a.release_date) - new Date(b.release_date);
+                    }
+                });
+
+                // 렌더링 초기화
+                document.getElementById('movie-container').innerHTML = '';
+                currentIndex = 0;
+                renderMovies(currentFiltered);
+            });
+        });
+    </script>
+</body>
+</html>

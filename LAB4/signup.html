@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign up</title>
+    <link rel = "stylesheet" type = "text/css" href = "main.css">
+</head>
+<body>
+    <h2>Welcome to INTERNET-PROGRAMMING MOVIE SITE</h2>
+    <a href = "index.html">메인페이지</a>   
+    <a href = "login.html">로그인</a>
+    <a href = "signup.html">회원 가입</a>
+    <div class="div-container" id = "signup">
+        <form>
+            <label for="name">이름 :</label>
+            <input type="text" id="name" autofocus required>
+            <br>
+            <label for="birth">생일 :</label>
+            <input type="date" id="birth">
+            <br>
+            <label for="birth">성별 :</label>
+            <input type="radio" id="male" name="gender" value="male"> 
+            <label for="male">남성</label>
+            <input type="radio" id="female" name="gender" value="female"> 
+            <label for="female">여성</label>
+            <br>
+            <label for="grade">학년 :</label>
+            <input type="number" min="1" max="4" value="1" step="1" id="grade">
+            <br>
+            <label for="id">아이디 :</label>
+            <input type="text" id="id" required>
+            <br>
+            <label for="password">비밀번호 :</label>
+            <input type="password" id="password" required>
+            <br>
+            <label for="email">이메일 :</label>
+            <input type="email" id="email" required>
+            <br>
+            <label for="question">보안 질문 :</label>
+            <select name="question" id="question">
+                <option value="">질문을 선택하세요</option>
+                <option value="q1">가장 좋아하는 색은 무엇인가요?</option>
+                <option value="q2">어느 초등학교 출신인가요?</option>
+                <option value="q3">어렸을 때 꿈이 무엇이었나요?</option>
+            </select>
+            <br>
+            <label for="answer">답변 :</label>
+            <input type="text" id="answer">
+            <br>
+            <button type="submit" id="signup-button">Sign up</button>
+            <button type="reset" id="cancel-button">Cancel</button>
+        </form>
+    </div>
+</body>
+</html>
